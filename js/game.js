@@ -22,6 +22,8 @@ var particlesPool = [];
 var particlesInUse = [];
 var backgroundMusic;
 var planeSound;
+var fuelPopSound;
+var brickHitSound;
 
 function resetGame() {
     game = {
@@ -144,6 +146,17 @@ function createScene() {
     planeSound.load('sounds/plane.ogg');
     planeSound.setLoop(true);
     planeSound.setVolume(0.7);
+
+    fuelPopSound = new THREE.Audio(listener);
+    fuelPopSound.load('sounds/fuel-pop.ogg');
+    fuelPopSound.setVolume(0.4);
+    fuelPopSound.setLoop(false);
+
+    brickHitSound = new THREE.Audio(listener);
+    brickHitSound.load('sounds/brick-hit.ogg');
+    brickHitSound.setVolume(0.4);
+    brickHitSound.setLoop(false);
+
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
@@ -662,6 +675,8 @@ EnnemiesHolder.prototype.rotateEnnemies = function () {
             game.planeCollisionSpeedY = 100 * diffPos.y / d;
             ambientLight.intensity = 2;
 
+            brickHitSound.play();
+
             removeEnergy();
             i--;
         } else if (ennemy.angle > Math.PI) {
@@ -792,6 +807,7 @@ CoinsHolder.prototype.rotateCoins = function () {
             this.mesh.remove(coin.mesh);
             particlesHolder.spawnParticles(coin.mesh.position.clone(), 5, 0x009999, .8);
             addEnergy();
+            fuelPopSound.play();
             i--;
         } else if (coin.angle > Math.PI) {
             this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
