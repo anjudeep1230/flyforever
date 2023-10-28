@@ -21,6 +21,7 @@ var ennemiesPool = [];
 var particlesPool = [];
 var particlesInUse = [];
 var backgroundMusic;
+var planeSound;
 
 function resetGame() {
     game = {
@@ -90,6 +91,7 @@ function startGame() {
     game.status = "playing";
     fadeElement(bannerElement);
     backgroundMusic.play();
+    planeSound.play();
 }
 
 //THREEJS RELATED VARIABLES
@@ -137,6 +139,11 @@ function createScene() {
     backgroundMusic.load('sounds/bg-music.ogg');
     backgroundMusic.setLoop(true);
     backgroundMusic.setVolume(0.3);
+
+    planeSound = new THREE.Audio(listener);
+    planeSound.load('sounds/plane.ogg');
+    planeSound.setLoop(true);
+    planeSound.setVolume(0.7);
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
@@ -1003,6 +1010,9 @@ function updatePlane() {
 
 function showReplay() {
     replayMessage.style.display = "block";
+    if (planeSound.isPlaying) {
+        planeSound.pause();
+    }
 }
 
 function hideReplay() {
