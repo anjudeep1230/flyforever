@@ -20,6 +20,7 @@ var oldTime = new Date().getTime();
 var ennemiesPool = [];
 var particlesPool = [];
 var particlesInUse = [];
+var backgroundMusic;
 
 function resetGame() {
     game = {
@@ -80,10 +81,13 @@ function resetGame() {
         ennemiesSpeed: .6,
         ennemyLastSpawn: 0,
         distanceForEnnemiesSpawn: 50,
-
-        status: "playing",
+        status: "waitingForPlayer",
     };
     fieldLevel.innerHTML = Math.floor(game.level);
+}
+
+function startGame() {
+    game.status = "playing";
 }
 
 //THREEJS RELATED VARIABLES
@@ -167,8 +171,9 @@ function handleTouchMove(event) {
 }
 
 function handleMouseUp(event) {
-    if (game.status == "waitingReplay") {
+    if (game.status == "waitingReplay" || game.status == "waitingForPlayer") {
         resetGame();
+        startGame();
         hideReplay();
     }
 }
@@ -789,7 +794,6 @@ function createSky() {
 }
 
 function createCoins() {
-
     coinsHolder = new CoinsHolder(20);
     scene.add(coinsHolder.mesh)
 }
@@ -867,8 +871,23 @@ function loop() {
         }
     } else if (game.status == "waitingReplay") {
 
-    }
+    } else if (game.status == "waitingForPlayer") {
+        if (Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate) {
+            game.speedLastUpdate = Math.floor(game.distance);
+            game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
+        }
 
+        if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
+            game.levelLastUpdate = Math.floor(game.distance);
+            game.level++;
+            fieldLevel.innerHTML = Math.floor(game.level);
+
+            game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level
+        }
+        updatePlane();
+        game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
+        game.speed = game.baseSpeed * game.planeSpeed;
+    }
 
     airplane.propeller.rotation.x += .2 + game.planeSpeed * deltaTime * .005;
     sea.mesh.rotation.z += game.speed * deltaTime;//*game.seaRotationSpeed;
@@ -974,25 +993,22 @@ function normalize(v, vmin, vmax, tmin, tmax) {
     return tv;
 }
 
-var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle;
+var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, playMessage;
 
 function init(event) {
 
     // UI
-
     fieldDistance = document.getElementById("distValue");
     energyBar = document.getElementById("energyBar");
     replayMessage = document.getElementById("replayMessage");
+    playMessage = document.getElementById("playMessage");
     fieldLevel = document.getElementById("levelValue");
     levelCircle = document.getElementById("levelCircleStroke");
-
-
 
     resetGame();
     createScene();
 
     showReplay();
-    game.status = "waitingReplay";
 
     createLights();
     createPlane();
@@ -1001,7 +1017,6 @@ function init(event) {
     createCoins();
     createEnnemies();
     createParticles();
-
 
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('touchmove', handleTouchMove, false);
