@@ -986,8 +986,13 @@ function init(event) {
     fieldLevel = document.getElementById("levelValue");
     levelCircle = document.getElementById("levelCircleStroke");
 
+
+
     resetGame();
     createScene();
+
+    showReplay();
+    game.status = "waitingReplay";
 
     createLights();
     createPlane();
@@ -996,6 +1001,7 @@ function init(event) {
     createCoins();
     createEnnemies();
     createParticles();
+
 
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('touchmove', handleTouchMove, false);
