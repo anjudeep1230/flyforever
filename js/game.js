@@ -88,6 +88,7 @@ function resetGame() {
 
 function startGame() {
     game.status = "playing";
+    fadeElement(bannerElement);
 }
 
 //THREEJS RELATED VARIABLES
@@ -171,10 +172,12 @@ function handleTouchMove(event) {
 }
 
 function handleMouseUp(event) {
-    if (game.status == "waitingReplay" || game.status == "waitingForPlayer") {
+    if (game.status == "waitingForPlayer") {
         resetGame();
         startGame();
         hideReplay();
+    } else if (game.status == "waitingReplay") {
+        window.location.reload();
     }
 }
 
@@ -182,6 +185,7 @@ function handleMouseUp(event) {
 function handleTouchEnd(event) {
     if (game.status == "waitingReplay") {
         resetGame();
+        startGame();
         hideReplay();
     }
 }
@@ -993,7 +997,7 @@ function normalize(v, vmin, vmax, tmin, tmax) {
     return tv;
 }
 
-var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, playMessage;
+var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, bannerElement, scoreElement;
 
 function init(event) {
 
@@ -1001,7 +1005,8 @@ function init(event) {
     fieldDistance = document.getElementById("distValue");
     energyBar = document.getElementById("energyBar");
     replayMessage = document.getElementById("replayMessage");
-    playMessage = document.getElementById("playMessage");
+    bannerElement = document.getElementById("banner");
+    scoreElement = document.getElementById("score");
     fieldLevel = document.getElementById("levelValue");
     levelCircle = document.getElementById("levelCircleStroke");
 
