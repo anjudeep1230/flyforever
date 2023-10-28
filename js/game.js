@@ -89,6 +89,7 @@ function resetGame() {
 function startGame() {
     game.status = "playing";
     fadeElement(bannerElement);
+    backgroundMusic.play();
 }
 
 //THREEJS RELATED VARIABLES
@@ -127,6 +128,15 @@ function createScene() {
     camera.position.z = 200;
     camera.position.y = game.planeDefaultHeight;
     //camera.lookAt(new THREE.Vector3(0, 400, 0));
+
+    // Setup sound here
+    var listener = new THREE.AudioListener();
+    camera.add(listener);
+
+    backgroundMusic = new THREE.Audio(listener);
+    backgroundMusic.load('sounds/bg-music.ogg');
+    backgroundMusic.setLoop(true);
+    backgroundMusic.setVolume(0.3);
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
@@ -187,6 +197,17 @@ function handleTouchEnd(event) {
         resetGame();
         startGame();
         hideReplay();
+    }
+}
+
+function handleKeyDown(event) {
+    // If M is pressed mute sound
+    if (event.keyCode == 77) { // M is pressed
+        if (backgroundMusic.isPlaying) {
+            backgroundMusic.pause();
+        } else {
+            backgroundMusic.play();
+        }
     }
 }
 
@@ -1027,6 +1048,7 @@ function init(event) {
     document.addEventListener('touchmove', handleTouchMove, false);
     document.addEventListener('mouseup', handleMouseUp, false);
     document.addEventListener('touchend', handleTouchEnd, false);
+    document.addEventListener('keydown', handleKeyDown, false);
 
     loop();
 }
