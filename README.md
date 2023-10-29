@@ -14,7 +14,7 @@ A Simple HTML-Based Browser Game in [three.js](https://threejs.org/).
 ## Game Overview
 This is a fork of original game by [yakudoo](https://github.com/yakudoo) [here](https://github.com/yakudoo/TheAviator.git). It was supposed to be a simple weekend project cause I had nothing better to do.
 
-GAME screenshot
+![GAME screenshot](https://raw.githubusercontent.com/akay25/TheAviator/master/media/screenshot.png "Game screeshot")
 
 ## How to Play
 To play the game directly, go to [demo site](https://akay25.github.io/TheAviator/). 
