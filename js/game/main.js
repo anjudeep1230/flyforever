@@ -93,7 +93,6 @@ function resetGame() {
 function startGame() {
     game.status = "playing";
     fadeElement(bannerElement);
-    backgroundMusic.play();
     planeSound.play();
 }
 
@@ -137,11 +136,6 @@ function createScene() {
     // Setup sound here
     var listener = new THREE.AudioListener();
     camera.add(listener);
-
-    backgroundMusic = new THREE.Audio(listener);
-    backgroundMusic.load('sounds/bg-music.ogg');
-    backgroundMusic.setLoop(true);
-    backgroundMusic.setVolume(0.3);
 
     planeSound = new THREE.Audio(listener);
     planeSound.load('sounds/plane.ogg');
@@ -224,10 +218,10 @@ function handleTouchEnd(event) {
 function handleKeyDown(event) {
     // If M is pressed mute sound
     if (event.keyCode == 77) { // M is pressed
-        if (backgroundMusic.isPlaying) {
-            backgroundMusic.pause();
+        if (planeSound.isPlaying) {
+            planeSound.pause();
         } else {
-            backgroundMusic.play();
+            planeSound.play();
         }
     }
 }
